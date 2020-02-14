@@ -10,38 +10,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js" type="text/javascript"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js" type="text/javascript"></script>
 
-  <script type="text/babel">
-    function reducer(state, action) {
-      switch (action.type) {
-        case 'INC':
-          return {...state, counter: action.payload};
-        case 'DEC':
-          return {...state, counter: state.counter - 1};
-        default:
-          return state;
-      }
-    }
-    const initialState = {
-      counter: 0
-    }
-    const store = Redux.createStore(reducer, initialState);
-
-    function upDateData() {
-      document.getElementById('counter').innerText = store.getState().counter;
-    }
-    store.subscribe(upDateData);
-    document.getElementById('inc').onclick = () => {
-      store.dispatch({
-        type: 'INC',
-        payload: store.getState().counter + 1
-      })
-    };
-    document.getElementById('dec').onclick = () => {
-      store.dispatch({
-        type: 'DEC'
-      })
-    };
-  </script>
+  <script src="resources/js/counter.jsx" type="text/babel"></script>
 </head>
 <body>
 <form method="post" action="Login">
@@ -50,11 +19,7 @@
   <input type="submit" value="login"/>
 </form>
 
-<div>
-    Counter:
-    <span id="counter"></span>
-</div>
-<button id="inc">Increment</button>
-<button id="dec">Decrement</button>
+<div id="root"></div>
+
 </body>
 </html>
