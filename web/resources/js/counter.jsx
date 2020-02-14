@@ -10,25 +10,32 @@ function reducer(state, action) {
 }
 const initialState = {
   counter: 0
-}
+};
 const store = Redux.createStore(reducer, initialState);
 
-function upDateData() {
+function updateData() {
   document.getElementById('counter').innerText = store.getState().counter;
 }
-store.subscribe(upDateData);
+store.subscribe(updateData);
+
+function incAction() {
+  return {
+    type: 'INC',
+    payload: store.getState().counter + 1
+  };
+}
+function decAction() {
+  return {
+    type: 'DEC'
+  };
+}
 
 function Counter() {
   const handleIncrementClick = () => {
-    store.dispatch({
-      type: 'INC',
-      payload: store.getState().counter + 1
-    })
+    store.dispatch(incAction());
   };
   const handleDecrementClick = () => {
-    store.dispatch({
-      type: 'DEC'
-    })
+    store.dispatch(decAction());
   };
   return (
     <div>
@@ -36,8 +43,8 @@ function Counter() {
         Counter:
         <span id="counter">{initialState.counter}</span>
       </div>
-      <button id="inc" onClick={handleIncrementClick}>Increment</button>
-      <button id="dec" onClick={handleDecrementClick}>Decrement</button>
+      <button onClick={handleIncrementClick}>Increment</button>
+      <button onClick={handleDecrementClick}>Decrement</button>
     </div>
   );
 }
