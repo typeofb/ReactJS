@@ -34,7 +34,7 @@ function Counter() {
     <div>
       <div>
         Counter:
-        <span id="counter"></span>
+        <span id="counter">{initialState.counter}</span>
       </div>
       <button id="inc" onClick={handleIncrementClick}>Increment</button>
       <button id="dec" onClick={handleDecrementClick}>Decrement</button>
