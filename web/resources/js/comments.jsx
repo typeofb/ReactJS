@@ -46,7 +46,10 @@ class CommentBox extends React.Component {
       params: {foo: 'bar'}
     })
       .then(response => {
-        console.log(response.data);
+        response.data.map(mail => ({
+          fakeNm: '${mail.fakeNm}',
+          realNm: '${mail.realNm}'
+        }))
       })
       .catch(response => {
         console.log(response.data);
