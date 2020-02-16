@@ -41,6 +41,18 @@ class CommentForm extends React.Component {
 }
 
 class CommentBox extends React.Component {
+  componentDidMount() {
+    axios.get('Login', {
+      params: {foo: 'bar'}
+    })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(response => {
+        console.log(response.data);
+      });
+  }
+
   render() {
     return (
       <div>
