@@ -41,7 +41,7 @@ function Counter() {
     <div>
       <div>
         Counter:
-        <span id="counter">{store.getState().counter}</span>
+        <span id="counter">{initialState.counter}</span>
       </div>
       <button onClick={handleIncrementClick}>Increment</button>
       <button onClick={handleDecrementClick}>Decrement</button>
