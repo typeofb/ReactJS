@@ -22,6 +22,6 @@ public class Login extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html; charset=utf-8");
         PrintWriter out = response.getWriter();
-        out.print("[{\"fakeNm\":\"/mobile/file/download/0/1466388349809\",\"realNm\":\"Chrysanthemum.jpg\"},{\"fakeNm\":\"/mobile/file/download/0/1466388310261\",\"realNm\":\"Desert.jpg\"},{\"fakeNm\":\"/mobile/file/download/0/1466387904304\",\"realNm\":\"Hydrangeas.jpg\"}]");
+        out.print("[{\"id\":\"0\",\"fakeNm\":\"/mobile/file/download/0/1466388349809\",\"realNm\":\"Chrysanthemum.jpg\"},{\"id\":\"1\",\"fakeNm\":\"/mobile/file/download/0/1466388310261\",\"realNm\":\"Desert.jpg\"},{\"id\":\"2\",\"fakeNm\":\"/mobile/file/download/0/1466387904304\",\"realNm\":\"Hydrangeas.jpg\"}]");
     }
 }
