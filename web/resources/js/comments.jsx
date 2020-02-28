@@ -188,7 +188,7 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         items: action.data
-      }
+      };
     case INSERT:
       return Object.assign({}, state, {
         items: state.items.concat({
@@ -202,27 +202,27 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         items: state.items.map(item => item.id === action.id ? {...item, editing: false, realNm: action.realNm} : item)
-      }
+      };
     case DELETE:
       return {
         ...state,
         items: state.items.filter(item => item.id !== action.id)
-      }
+      };
     case EDIT:
       return {
         ...state,
         items: state.items.map(item => item.id === action.id ? {...item, editing: true} : item)
-      }
+      };
     case CANCEL:
       return {
         ...state,
         items: state.items.map(item => item.id === action.id ? {...item, editing: false} : item)
-      }
+      };
     case CHANGE:
       return {
         ...state,
         items: state.items.map(item => item.id === action.id ? {...item, realNm: action.realNm} : item)
-      }
+      };
     default:
       return state;
   }
@@ -233,6 +233,6 @@ const render = () => {
   ReactDOM.render(<CommentBox store={store}/>,
     document.getElementById('content')
   );
-}
+};
 store.subscribe(render);
 render();
