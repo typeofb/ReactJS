@@ -1,5 +1,5 @@
 // 함수형 컴포넌트
-const Comment = ({fakeNm, realNm, editing, onUpdateClick, onDeleteClick, onEditClick, onCancelClick}) => {
+const Comment = ({fakeNm, realNm, editing, onUpdateClick, onDeleteClick, onEditClick, onCancelClick, onChange}) => {
   if (!editing) {
     return (
       <ul>
@@ -23,7 +23,7 @@ const Comment = ({fakeNm, realNm, editing, onUpdateClick, onDeleteClick, onEditC
             <span>가상경로 : {fakeNm}</span>
           </div>
           <div>
-            <textarea defaultValue={realNm} ref="message"></textarea>
+            <textarea value={realNm} onChange={(e) => onChange(e.target.value)}/>
             <button onClick={() => onUpdateClick()}>수정</button>
             <button onClick={() => onCancelClick()}>취소</button>
           </div>
@@ -39,8 +39,8 @@ class CommentList extends React.Component {
     super(props);
   }
 
-  handleUpdateClick(id) {
-    this.props.store.dispatch(updateComment(id, 'refs'));
+  handleUpdateClick(id, realNm) {
+    this.props.store.dispatch(updateComment(id, realNm));
   }
 
   handleDeleteClick(id) {
@@ -55,6 +55,10 @@ class CommentList extends React.Component {
     this.props.store.dispatch(cancelComment(id));
   }
 
+  handleChange(id, realNm) {
+    this.props.store.dispatch(changeComment(id, realNm));
+  }
+
   render() {
     let commentNodes = this.props.store.getState().items.map((element, index) =>
       <Comment store={this.props.store}
@@ -62,10 +66,11 @@ class CommentList extends React.Component {
                fakeNm={element.fakeNm}
                realNm={element.realNm}
                editing={element.editing}
-               onUpdateClick={() => this.handleUpdateClick(element.id)}
+               onUpdateClick={() => this.handleUpdateClick(element.id, element.realNm)}
                onDeleteClick={() => this.handleDeleteClick(element.id)}
                onEditClick={() => this.handleEditClick(element.id)}
-               onCancelClick={() => this.handleCancelClick(element.id)}/>
+               onCancelClick={() => this.handleCancelClick(element.id)}
+               onChange={(e) => this.handleChange(element.id, e)}/>
     );
     return (
       <div>
@@ -135,6 +140,7 @@ const UPDATE = 'UPDATE';
 const DELETE = 'DELETE';
 const EDIT = 'EDIT';
 const CANCEL = 'CANCEL';
+const CHANGE = 'CHANGE';
 
 // action creators
 function selectComment(data) {
@@ -159,6 +165,10 @@ function editComment(id) {
 
 function cancelComment(id) {
   return {type: CANCEL, id};
+}
+
+function changeComment(id, realNm) {
+  return {type: CHANGE, id, realNm};
 }
 
 const initialState = {
@@ -207,6 +217,11 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         items: state.items.map(item => item.id === action.id ? {...item, editing: false} : item)
+      }
+    case CHANGE:
+      return {
+        ...state,
+        items: state.items.map(item => item.id === action.id ? {...item, realNm: action.realNm} : item)
       }
     default:
       return state;
