@@ -1,19 +1,36 @@
 // 함수형 컴포넌트
-const Comment = ({fakeNm, realNm, onUpdateCommentClick, onDeleteCommentClick}) => {
-  return (
-    <ul>
-      <li>
-        <div>
-          <span>가상경로 : {fakeNm}</span>
-        </div>
-        <div>
-          <span><p>실제경로 : {realNm}</p></span>
-          <button onClick={() => onUpdateCommentClick()}>수정</button>
-          <button onClick={() => onDeleteCommentClick()}>삭제</button>
-        </div>
-      </li>
-    </ul>
-  );
+const Comment = ({fakeNm, realNm, editing, onUpdateClick, onDeleteClick, onChangeClick, onCancelClick}) => {
+  if (!editing) {
+    return (
+      <ul>
+        <li>
+          <div>
+            <span>가상경로 : {fakeNm}</span>
+          </div>
+          <div>
+            <span><p>실제경로 : {realNm}</p></span>
+            <button onClick={() => onChangeClick()}>Update</button>
+            <button onClick={() => onDeleteClick()}>Delete</button>
+          </div>
+        </li>
+      </ul>
+    );
+  } else {
+    return (
+      <ul>
+        <li>
+          <div>
+            <span>가상경로 : {fakeNm}</span>
+          </div>
+          <div>
+            <textarea defaultValue={realNm} ref="message"></textarea>
+            <button onClick={() => onUpdateClick()}>수정</button>
+            <button onClick={() => onCancelClick()}>취소</button>
+          </div>
+        </li>
+      </ul>
+    );
+  }
 };
 
 // 클래스형 컴포넌트
@@ -22,12 +39,20 @@ class CommentList extends React.Component {
     super(props);
   }
 
-  handleUpdateClick(fakeNm, realNm) {
-    this.props.store.dispatch(updateComment(fakeNm, realNm));
+  handleUpdateClick(id) {
+    this.props.store.dispatch(updateComment(id, 'refs'));
   }
 
   handleDeleteClick(id) {
     this.props.store.dispatch(deleteComment(id));
+  }
+
+  handleChangeClick(id) {
+    this.props.store.dispatch(changeComment(id));
+  }
+
+  handleCancelClick(id) {
+    this.props.store.dispatch(cancelComment(id));
   }
 
   render() {
@@ -36,8 +61,11 @@ class CommentList extends React.Component {
                key={index}
                fakeNm={element.fakeNm}
                realNm={element.realNm}
-               onUpdateCommentClick={() => this.handleUpdateClick(element.id, element.fakeNm, element.realNm)}
-               onDeleteCommentClick={() => this.handleDeleteClick(element.id)}/>
+               editing={element.editing}
+               onUpdateClick={() => this.handleUpdateClick(element.id)}
+               onDeleteClick={() => this.handleDeleteClick(element.id)}
+               onChangeClick={() => this.handleChangeClick(element.id)}
+               onCancelClick={() => this.handleCancelClick(element.id)}/>
     );
     return (
       <div>
@@ -105,6 +133,8 @@ const SELECT = 'SELECT';
 const INSERT = 'INSERT';
 const UPDATE = 'UPDATE';
 const DELETE = 'DELETE';
+const CHANGE = 'CHANGE';
+const CANCEL = 'CANCEL';
 
 // action creators
 function selectComment(data) {
@@ -115,12 +145,20 @@ function insertComment(data) {
   return {type: INSERT, data};
 }
 
-function updateComment(id, fakeNm, realNm) {
-  return {type: UPDATE, id, fakeNm, realNm};
+function updateComment(id, realNm) {
+  return {type: UPDATE, id, realNm};
 }
 
 function deleteComment(id) {
   return {type: DELETE, id};
+}
+
+function changeComment(id) {
+  return {type: CHANGE, id};
+}
+
+function cancelComment(id) {
+  return {type: CANCEL, id};
 }
 
 const initialState = {
@@ -128,7 +166,8 @@ const initialState = {
     {
       id: '',
       fakeNm: '',
-      realNm: ''
+      realNm: '',
+      editing: ''
     }
   ]
 };
@@ -152,12 +191,22 @@ function reducer(state = initialState, action) {
     case UPDATE:
       return {
         ...state,
-        items: state.items.map(item => item.id === action.id ? {...item, realNm: '수정됨'} : item)
+        items: state.items.map(item => item.id === action.id ? {...item, editing: false, realNm: action.realNm} : item)
       }
     case DELETE:
       return {
         ...state,
         items: state.items.filter(item => item.id !== action.id)
+      }
+    case CHANGE:
+      return {
+        ...state,
+        items: state.items.map(item => item.id === action.id ? {...item, editing: true} : item)
+      }
+    case CANCEL:
+      return {
+        ...state,
+        items: state.items.map(item => item.id === action.id ? {...item, editing: false} : item)
       }
     default:
       return state;
