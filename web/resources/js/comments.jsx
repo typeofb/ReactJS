@@ -36,7 +36,7 @@ class CommentList extends React.Component {
                key={index}
                fakeNm={element.fakeNm}
                realNm={element.realNm}
-               onUpdateCommentClick={() => this.handleUpdateClick(element.fakeNm, element.realNm)}
+               onUpdateCommentClick={() => this.handleUpdateClick(element.id, element.fakeNm, element.realNm)}
                onDeleteCommentClick={() => this.handleDeleteClick(element.id)}/>
     );
     return (
@@ -115,12 +115,8 @@ function insertComment(data) {
   return {type: INSERT, data};
 }
 
-function updateComment(fakeNm, realNm) {
-  let data = {
-    fakeNm: fakeNm,
-    realNm: realNm
-  };
-  return {type: UPDATE, data};
+function updateComment(id, fakeNm, realNm) {
+  return {type: UPDATE, id, fakeNm, realNm};
 }
 
 function deleteComment(id) {
@@ -156,7 +152,7 @@ function reducer(state = initialState, action) {
     case UPDATE:
       return {
         ...state,
-        items: state.items.map(item => item.fakeNm === action.data.fakeNm ? {...item, realNm: '수정됨'} : item)
+        items: state.items.map(item => item.id === action.id ? {...item, realNm: '수정됨'} : item)
       }
     case DELETE:
       return {
