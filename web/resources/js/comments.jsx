@@ -1,5 +1,5 @@
 // 함수형 컴포넌트
-const Comment = ({fakeNm, realNm, editing, onUpdateClick, onDeleteClick, onChangeClick, onCancelClick}) => {
+const Comment = ({fakeNm, realNm, editing, onUpdateClick, onDeleteClick, onEditClick, onCancelClick}) => {
   if (!editing) {
     return (
       <ul>
@@ -9,7 +9,7 @@ const Comment = ({fakeNm, realNm, editing, onUpdateClick, onDeleteClick, onChang
           </div>
           <div>
             <span><p>실제경로 : {realNm}</p></span>
-            <button onClick={() => onChangeClick()}>Update</button>
+            <button onClick={() => onEditClick()}>Update</button>
             <button onClick={() => onDeleteClick()}>Delete</button>
           </div>
         </li>
@@ -47,8 +47,8 @@ class CommentList extends React.Component {
     this.props.store.dispatch(deleteComment(id));
   }
 
-  handleChangeClick(id) {
-    this.props.store.dispatch(changeComment(id));
+  handleEditClick(id) {
+    this.props.store.dispatch(editComment(id));
   }
 
   handleCancelClick(id) {
@@ -64,7 +64,7 @@ class CommentList extends React.Component {
                editing={element.editing}
                onUpdateClick={() => this.handleUpdateClick(element.id)}
                onDeleteClick={() => this.handleDeleteClick(element.id)}
-               onChangeClick={() => this.handleChangeClick(element.id)}
+               onEditClick={() => this.handleEditClick(element.id)}
                onCancelClick={() => this.handleCancelClick(element.id)}/>
     );
     return (
@@ -133,7 +133,7 @@ const SELECT = 'SELECT';
 const INSERT = 'INSERT';
 const UPDATE = 'UPDATE';
 const DELETE = 'DELETE';
-const CHANGE = 'CHANGE';
+const EDIT = 'EDIT';
 const CANCEL = 'CANCEL';
 
 // action creators
@@ -153,8 +153,8 @@ function deleteComment(id) {
   return {type: DELETE, id};
 }
 
-function changeComment(id) {
-  return {type: CHANGE, id};
+function editComment(id) {
+  return {type: EDIT, id};
 }
 
 function cancelComment(id) {
@@ -198,7 +198,7 @@ function reducer(state = initialState, action) {
         ...state,
         items: state.items.filter(item => item.id !== action.id)
       }
-    case CHANGE:
+    case EDIT:
       return {
         ...state,
         items: state.items.map(item => item.id === action.id ? {...item, editing: true} : item)
