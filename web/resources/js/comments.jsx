@@ -40,29 +40,28 @@ class CommentList extends React.Component {
   }
 
   handleUpdateClick(id, realNm) {
-    this.props.store.dispatch(updateComment(id, realNm));
+    this.props.onUpdateComment(id, realNm);
   }
 
   handleDeleteClick(id) {
-    this.props.store.dispatch(deleteComment(id));
+    this.props.onDeleteComment(id);
   }
 
   handleEditClick(id) {
-    this.props.store.dispatch(editComment(id));
+    this.props.onEditComment(id);
   }
 
   handleCancelClick(id) {
-    this.props.store.dispatch(cancelComment(id));
+    this.props.onCancelComment(id);
   }
 
   handleChange(id, realNm) {
-    this.props.store.dispatch(changeComment(id, realNm));
+    this.props.onChangeComment(id, realNm);
   }
 
   render() {
-    let commentNodes = this.props.store.getState().items.map((element, index) =>
-      <Comment store={this.props.store}
-               key={index}
+    let commentNodes = this.props.items.map((element, index) =>
+      <Comment key={index}
                fakeNm={element.fakeNm}
                realNm={element.realNm}
                editing={element.editing}
@@ -81,6 +80,22 @@ class CommentList extends React.Component {
   }
 }
 
+let mapStateToPropsList = (state) => {
+  return {items: state.items}
+}
+
+let mapDispatchToPropsList = (dispatch) => {
+  return {
+    onUpdateComment: (id, realNm) => dispatch(updateComment(id, realNm)),
+    onDeleteComment: (id) => dispatch(deleteComment(id)),
+    onEditComment: (id) => dispatch(editComment(id)),
+    onCancelComment: (id) => dispatch(cancelComment(id)),
+    onChangeComment: (id, realNm) => dispatch(changeComment(id, realNm))
+  }
+}
+
+CommentList = ReactRedux.connect(mapStateToPropsList, mapDispatchToPropsList)(CommentList);
+
 class CommentForm extends React.Component {
   constructor(props) {
     super(props);
@@ -95,7 +110,7 @@ class CommentForm extends React.Component {
       realNm: e.target.realNm.value,
       editing: false
     };
-    this.props.store.dispatch(insertComment(data));
+    this.props.onInsertComment(data);
     e.target.elements.fakeNm.value = '';
     e.target.realNm.value = '';
   }
@@ -111,13 +126,19 @@ class CommentForm extends React.Component {
   }
 }
 
+let mapDispatchToPropsForm = (dispatch) => {
+  return {onInsertComment: (data) => dispatch(insertComment(data))}
+}
+
+CommentForm = ReactRedux.connect(undefined, mapDispatchToPropsForm)(CommentForm);
+
 class CommentBox extends React.Component {
   constructor(props) {
     super(props);
     axios.get('Login', {
       params: {foo: 'bar'}
     }).then(response => {
-      this.props.store.dispatch(selectComment(response.data))
+      this.props.onSelectComment(response.data)
     }).catch(response => {
       console.log(response.data);
     });
@@ -126,12 +147,18 @@ class CommentBox extends React.Component {
   render() {
     return (
       <div>
-        <CommentList store={this.props.store}/>
-        <CommentForm store={this.props.store}/>
+        <CommentList/>
+        <CommentForm/>
       </div>
     );
   }
 }
+
+let mapDispatchToPropsBox = (dispatch) => {
+  return {onSelectComment: (data) => dispatch(selectComment(data))}
+}
+
+CommentBox = ReactRedux.connect(undefined, mapDispatchToPropsBox)(CommentBox);
 
 // action types
 const SELECT = 'SELECT';
@@ -229,10 +256,9 @@ function reducer(state = initialState, action) {
 }
 
 const store = Redux.createStore(reducer);
-const render = () => {
-  ReactDOM.render(<CommentBox store={store}/>,
-    document.getElementById('content')
-  );
-};
-store.subscribe(render);
-render();
+ReactDOM.render(
+  <ReactRedux.Provider store={store}>
+    <CommentBox/>
+  </ReactRedux.Provider>,
+  document.getElementById('content')
+);
