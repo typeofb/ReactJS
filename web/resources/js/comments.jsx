@@ -39,37 +39,17 @@ class CommentList extends React.Component {
     super(props);
   }
 
-  handleUpdateClick(id, realNm) {
-    this.props.onUpdateComment(id, realNm);
-  }
-
-  handleDeleteClick(id) {
-    this.props.onDeleteComment(id);
-  }
-
-  handleEditClick(id) {
-    this.props.onEditComment(id);
-  }
-
-  handleCancelClick(id) {
-    this.props.onCancelComment(id);
-  }
-
-  handleChange(id, realNm) {
-    this.props.onChangeComment(id, realNm);
-  }
-
   render() {
     let commentNodes = this.props.items.map((element, index) =>
       <Comment key={index}
                fakeNm={element.fakeNm}
                realNm={element.realNm}
                editing={element.editing}
-               onUpdateClick={() => this.handleUpdateClick(element.id, element.realNm)}
-               onDeleteClick={() => this.handleDeleteClick(element.id)}
-               onEditClick={() => this.handleEditClick(element.id)}
-               onCancelClick={() => this.handleCancelClick(element.id)}
-               onChange={(e) => this.handleChange(element.id, e)}/>
+               onUpdateClick={() => this.props.onUpdateComment(element.id, element.realNm)}
+               onDeleteClick={() => this.props.onDeleteComment(element.id)}
+               onEditClick={() => this.props.onEditComment(element.id)}
+               onCancelClick={() => this.props.onCancelComment(element.id)}
+               onChange={(e) => this.props.onChangeComment(element.id, e)}/>
     );
     return (
       <div>
