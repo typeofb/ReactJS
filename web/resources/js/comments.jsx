@@ -62,7 +62,7 @@ class CommentList extends React.Component {
 
 let mapStateToPropsList = (state) => {
   return {items: state.items}
-}
+};
 
 let mapDispatchToPropsList = (dispatch) => {
   return {
@@ -72,7 +72,7 @@ let mapDispatchToPropsList = (dispatch) => {
     onCancelComment: (id) => dispatch(cancelComment(id)),
     onChangeComment: (id, realNm) => dispatch(changeComment(id, realNm))
   }
-}
+};
 
 CommentList = ReactRedux.connect(mapStateToPropsList, mapDispatchToPropsList)(CommentList);
 
@@ -108,7 +108,7 @@ class CommentForm extends React.Component {
 
 let mapDispatchToPropsForm = (dispatch) => {
   return {onInsertComment: (data) => dispatch(insertComment(data))}
-}
+};
 
 CommentForm = ReactRedux.connect(undefined, mapDispatchToPropsForm)(CommentForm);
 
@@ -136,7 +136,7 @@ class CommentBox extends React.Component {
 
 let mapDispatchToPropsBox = (dispatch) => {
   return {onSelectComment: (data) => dispatch(selectComment(data))}
-}
+};
 
 CommentBox = ReactRedux.connect(undefined, mapDispatchToPropsBox)(CommentBox);
 
